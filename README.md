@@ -6,7 +6,7 @@ This project was tested only on Raspberry PI Electron build, just for my own nee
 If you want to use this on RPI also, or I think any other linux distribution, you need to alter priveleges, because this is needed for connection.
 
 ### What is done
-Thanks to authentication formula this script can connect Speed Editor and put to console jog and keys actions. 
+Thanks to authentication formula this script can connect Speed Editor and catch all keys down/up.
 
 ## Usage
 Just require script and create new instance:
@@ -35,12 +35,11 @@ Keyup: { keyCode: 51, keyName: 'Camera 1' }
 Keyup: { keyCode: 52, keyName: 'Camera 2' }
 Keyup: { keyCode: 53, keyName: 'Camera 3' }
 ```
-You can do what you want by keyCode or keyName.
-That's it for now!
+You can do what you want by keyCode or keyName. Please remember, that's for now, script assume that SpeedEditor device is connected. Otherwise it throw an error.
 
 ### Todo
+* JOG encoder catch
+* LEDs onboard
 * Keep connection (it should be easy, because it's only need to reauthenticate within 10 minutes)
 * USB autoconnect / disconnect
-* LEDs onboard 
 * code cleaning 
-
