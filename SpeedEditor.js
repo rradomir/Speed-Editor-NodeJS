@@ -2,23 +2,23 @@ class SpeedEditor {
 	device;
 	keys=[];
 	keyNames={
-		0: "Smart Insert",
-		1: "Append",
-		2: "Ripple",
-		3: "Close Up",
-		4: "Place On Top",
-		5: "Source",
-		6: "In",
-		7: "Out",
-		8: "Trim In",
-		9: "Trim Out",
-		10: "Roll",
-		11: "Slip Source",
-		12: "Slip Destination",
-		13: "Transistion Duration",
-		14: "Cut",
-		15: "Dissolve",
-		16: "Smooth Cut",
+		1: "Smart Insert",
+		2: "Append",
+		3: "Ripple",
+		4: "Close Up",
+		5: "Place On Top",
+		6: "Source",
+		7: "In",
+		8: "Out",
+		9: "Trim In",
+		10: "Trim Out",
+		11: "Roll",
+		12: "Slip Source",
+		13: "Slip Destination",
+		14: "Transistion Duration",
+		15: "Cut",
+		16: "Dissolve",
+		17: "Smooth Cut",
 		49: "Escape",
 		31: "Sync Bin",
 		44: "Audio Level",
@@ -92,9 +92,9 @@ class SpeedEditor {
 	}
 
 	rol8n(v, n){
-	  for (let i=0;i<n;i++)
-		v = this.rol8(v);
-	return v;
+		for (let i=0;i<n;i++)
+			v = this.rol8(v);
+		return v;
 	}
 	   
 	#AUTH_EVEN_TBL = [
@@ -105,9 +105,7 @@ class SpeedEditor {
 		17018789593460232529n,
 		12706253227766860309n,
 		11978781369061872007n,
-		8438608961089703390n
-	];
-  
+		8438608961089703390n];
   	#AUTH_ODD_TBL = [
 		4477338132788707294n,
 		2622620659002747676n,
@@ -116,8 +114,7 @@ class SpeedEditor {
 		8224257920127642516n,
 		4049197610885016386n,
 		18266591397768539273n,
-		7035737829027231430n
-	];
+		7035737829027231430n];
 	#MASK = 12077075256910773232n;
 	   
 	authenticate(){
