@@ -76,8 +76,11 @@ class SpeedEditor {
 		if (success) this.device.on("data", (buffer)=>{
 			let data = [...buffer];
 			if (data[0]==4) this.keyAction(data.slice(1));
-			//else if (data[0]==3) this.keyJog(data.slice(1));
-		  
+			else if (data[0]==3) 
+				{
+				let value = buffer.readInt32LE(2);
+				this.emit('jog',Math.round(value/360));
+				}
 			});
 	}
 	  
