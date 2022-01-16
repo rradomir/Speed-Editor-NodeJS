@@ -1,8 +1,52 @@
-
 class SpeedEditor {
 	device;
 	keys=[];
-
+	keyNames={
+		0: "Smart Insert",
+		1: "Append",
+		2: "Ripple",
+		3: "Close Up",
+		4: "Place On Top",
+		5: "Source",
+		6: "In",
+		7: "Out",
+		8: "Trim In",
+		9: "Trim Out",
+		10: "Roll",
+		11: "Slip Source",
+		12: "Slip Destination",
+		13: "Transistion Duration",
+		14: "Cut",
+		15: "Dissolve",
+		16: "Smooth Cut",
+		49: "Escape",
+		31: "Sync Bin",
+		44: "Audio Level",
+		45: "Full View",
+		34: "Transistion",
+		47: "Split",
+		46: "Snap",
+		43: "Ripple Delete",
+		51: "Camera 1",
+		52: "Camera 2",
+		53: "Camera 3",
+		54: "Camera 4",
+		55: "Camera 5",
+		56: "Camera 6",
+		57: "Camera 7",
+		58: "Camera 8",
+		59: "Camera 9",
+		48: "Live",
+		37: "Video Only",
+		38: "Audio Only",
+		60: "Play / Pause",
+		26: "Source",
+		27: "Timeline",
+		28: "Shuffle",
+		29: "Jog",
+		30: "Scroll" 
+	}
+	
 	keyAction(data){
 	  /* on each keydown or keyup keyboard will send all pressed button at the moment
 	   * so we need to filter new keys and check which keys was released.
@@ -14,17 +58,16 @@ class SpeedEditor {
 	  
 		currentKeys.forEach(button => {
 			if(this.keys.indexOf(button) == -1)
-				this.emit('keydown',button);
+				this.emit('keydown',{keyCode:button,keyName:this.keyNames[button]});
 		});
 	  
 	  
 		this.keys.forEach(button => {
 			if(currentKeys.indexOf(button) == -1)
-				this.emit('keyup',button);
+				this.emit('keyup',{keyCode:button,keyName:this.keyNames[button]});
 			});
 		this.keys=currentKeys;
 	}
-
 
 	constructor() {
 		let hid = require('node-hid');
@@ -36,10 +79,7 @@ class SpeedEditor {
 			//else if (data[0]==3) this.keyJog(data.slice(1));
 		  
 			});
-	  
 	}
-	  
-	  
 	  
 	/* 
 	* Authenticate module is taken from:
@@ -140,61 +180,3 @@ class SpeedEditor {
   
 module.exports = SpeedEditor;
 require('util').inherits(SpeedEditor,require('events').EventEmitter);
-  
-
-/*
-	
-var buttons = [
-  "Smart Insert",
-  "Append",
-  "Ripple",
-  "Close Up",
-  "Place On Top",
-  "Source",
-  "In",
-  "Out",
-  "Trim In",
-  "Trim Out",
-  "Roll",
-  "Slip Source",
-  "Slip Destination",
-  "Transistion Duration",
-  "Cut",
-  "Dissolve",
-  "Smooth Cut"
-]
-
-var otherButtons = {
-  49: "Escape",
-  31: "Sync Bin",
-  44: "Audio Level",
-  45: "Full View",
-  34: "Transistion",
-  47: "Split",
-  46: "Snap",
-  43: "Ripple Delete",
-  51: "Camera 1",
-  52: "Camera 2",
-  53: "Camera 3",
-  54: "Camera 4",
-  55: "Camera 5",
-  56: "Camera 6",
-  57: "Camera 7",
-  58: "Camera 8",
-  59: "Camera 9",
-  48: "Live",
-  37: "Video Only",
-  38: "Audio Only",
-  60: "Play / Pause",
-  26: "Source",
-  27: "Timeline",
-  28: "Shuffle",
-  29: "Jog",
-  30: "Scroll"
-}
-
-Object.keys(otherButtons).forEach(buttonNumber => {
-  buttons[buttonNumber - 1] = otherButtons[buttonNumber];
-});
-
-*/
