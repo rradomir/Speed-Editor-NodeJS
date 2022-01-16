@@ -11,7 +11,7 @@ Thanks to authentication formula this script can connect Speed Editor and catch 
 ## Usage
 Just require script and create new instance:
 ```js
-const SpeedEditor = require('./SpeedEditor2b');
+const SpeedEditor = require('./SpeedEditor');
 
 var se = new SpeedEditor();
 
