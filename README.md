@@ -6,7 +6,10 @@ This project was tested only on Raspberry PI Electron build, just for my own nee
 If you want to use this on RPI also, or I think any other linux distribution, you need to alter priveleges, because this is needed for connection.
 
 ### What is done
-Thanks to authentication formula this script can connect Speed Editor and catch all keys down/up and force of jog spin. Value of jog is how strong and direction rotation user do with knob in actual moment.
+With [authentication formula by Sylvain Munaut](https://github.com/smunaut/blackmagic-misc "Github link") this script can:
+* connect Speed Editor
+* catch all keys down/up 
+* force & direction of knob spin in actual moment.
 
 ## Usage
 Just require script and create new instance:
