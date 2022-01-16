@@ -17,8 +17,6 @@ var se = new SpeedEditor();
 
 se.on("keydown",(data)=>{
   console.log("Keydown:",data);
-  //data holds keycode, do what you want there
-  
 });
 
 se.on("keyup",(data)=>{
@@ -26,6 +24,18 @@ se.on("keyup",(data)=>{
 });
 
 ```
+Expected output:
+```
+Keydown: { keyCode: 51, keyName: 'Camera 1' }
+Keyup: { keyCode: 51, keyName: 'Camera 1' }
+Keydown: { keyCode: 51, keyName: 'Camera 1' }
+Keydown: { keyCode: 52, keyName: 'Camera 2' }
+Keydown: { keyCode: 53, keyName: 'Camera 3' }
+Keyup: { keyCode: 51, keyName: 'Camera 1' }
+Keyup: { keyCode: 52, keyName: 'Camera 2' }
+Keyup: { keyCode: 53, keyName: 'Camera 3' }
+```
+You can do what you want by keyCode or keyName.
 That's it for now!
 
 ### Todo
