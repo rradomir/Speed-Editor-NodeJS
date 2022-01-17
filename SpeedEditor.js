@@ -114,9 +114,13 @@ class SpeedEditor {
 		this.setLight(0,0);
 
 	}
-	setLight = (code,value) => {
-		if (value==1&&this.currentLed.indexOf(code)==-1) this.currentLed.push(code);
-		if (value==0&&this.currentLed.indexOf(code)!=-1) this.currentLed.splice(this.currentLed.indexOf(code),1);
+	setLight = (value,...code) => {
+		
+		for (let c of code)
+		{
+			if (value&&this.currentLed.indexOf(c)==-1) this.currentLed.push(c);
+			if (!value&&this.currentLed.indexOf(c)!=-1) this.currentLed.splice(this.currentLed.indexOf(c),1);
+		}
 		let leds=0;
 		for (let i of this.currentLed) leds|=i;
 		let buf = Buffer.from([2,0,0,0,0,0]);
