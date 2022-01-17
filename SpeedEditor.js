@@ -73,19 +73,15 @@ class SpeedEditor {
 	   * so we need to filter new keys and check which keys was released.
 	   * keyboard can handle 6 simultaneous buttons
 	   * */
-
 		let currentKeys=[];
 		for (let i=0;i<data.length;i+=2) {
 			if (data[i]>0) currentKeys.push(data[i]);
 			else break;
 		}
-
 		currentKeys.forEach(button => {
 			if(this.keys.indexOf(button) == -1)
 				this.emit('keydown',{keyCode:button,keyName:this.keyNames[button]});
 		});
-
-
 		this.keys.forEach(button => {
 			if(currentKeys.indexOf(button) == -1)
 				this.emit('keyup',{keyCode:button,keyName:this.keyNames[button]});
@@ -105,18 +101,15 @@ class SpeedEditor {
 					let value = buffer.readInt32LE(2);
 					this.emit('jog',Math.round(value/360));
 				}
-
 			});
 		this.authTimer=setInterval(()=>{
 			this.authenticate();
-			console.log("reauthenticate");
 			},1500000);
-		this.setLight(0,0);
-
+		this.setLight(false,0);
 	}
+
 	setLight = (value,...code) => {
-		
-		for (let c of code)
+		for (let c of code.flat())
 		{
 			if (value&&this.currentLed.indexOf(c)==-1) this.currentLed.push(c);
 			if (!value&&this.currentLed.indexOf(c)!=-1) this.currentLed.splice(this.currentLed.indexOf(c),1);
@@ -127,8 +120,7 @@ class SpeedEditor {
 		buf.writeUInt32LE(leds, 1);
 		this.device.write(buf);
 	}
-	
-	
+
 	/*
 	* Authenticate module is taken from:
 	* https://github.com/smunaut/blackmagic-misc
@@ -138,13 +130,11 @@ class SpeedEditor {
 	rol8(v){
 		return BigInt(((v << 56n) | (v >> 8n)) & 18446744073709551615n)
 	}
-
 	rol8n(v, n){
 		for (let i=0;i<n;i++)
 			v = this.rol8(v);
 		return v;
 	}
-
 	#AUTH_EVEN_TBL = [
 		4242707987619187656n,
 		3069963097229903046n,
@@ -166,59 +156,50 @@ class SpeedEditor {
 	#MASK = 12077075256910773232n;
 
 	authenticate(){
-
-	// Reset the auth state machine
-	this.device.sendFeatureReport(Buffer.from([6,0,0,0,0,0,0,0,0,0]));
-
-	// Read the keyboard challenge (for keyboard to authenticate app)
-	let data=this.device.getFeatureReport(6, 10);
-	if (data[0]!=6||data[1]!=0)
-	{
-		console.log("Failed authentication get challenge");
-		return false;
-	}
-
-	const data_buf=Buffer.from(data);
-	let challenge = data_buf.readBigUInt64LE(2);
-
-	// Send our challenge (to authenticate keyboard)
-	// We don't care ... so just send 0x0000000000000000
-	this.device.sendFeatureReport(Buffer.from([6,1,0,0,0,0,0,0,0,0]));
-
-	// Read the keyboard response
-	// Again, we don't care, ignore the result
-	data=this.device.getFeatureReport(6, 10);
-	if (data[0]!=6||data[1]!=2)
-	{
-		console.log("Failed authentication response");
-		return false;
-	}
-
-	let	n = BigInt(challenge & 7n);
-	let v = BigInt(this.rol8n(challenge, n));
-	let k = BigInt(0n);
-	if ((v & 1n) == ((120n >> n) & 1n))
-		k = this.#AUTH_EVEN_TBL[n];
-	else
-		{
-		v = v ^ this.rol8(v);
-		k = this.#AUTH_ODD_TBL[n];
-		}
-	let response= BigInt(v ^ (this.rol8(v) & this.#MASK) ^ k);
-
-	//Read the status
-	const buf = Buffer.allocUnsafe(8);
-	buf.writeBigUInt64LE(response, 0);
-
-	this.device.sendFeatureReport(Buffer.concat([Buffer.from([6,3]),buf]));
-
-	data=this.device.getFeatureReport(6, 10);
-	if (data[0]!=6||data[1]!=4)
-		{
-		console.log("Failed authentication status");
-		return false;
-		}
-	return true;
+		// Reset the auth state machine
+		this.device.sendFeatureReport(Buffer.from([6,0,0,0,0,0,0,0,0,0]));
+		// Read the keyboard challenge (for keyboard to authenticate app)
+		let data=this.device.getFeatureReport(6, 10);
+		if (data[0]!=6||data[1]!=0)
+			{
+			console.log("Failed authentication get challenge");
+			return false;
+			}
+		const data_buf=Buffer.from(data);
+		let challenge = data_buf.readBigUInt64LE(2);
+		// Send our challenge (to authenticate keyboard)
+		// We don't care ... so just send 0x0000000000000000
+		this.device.sendFeatureReport(Buffer.from([6,1,0,0,0,0,0,0,0,0]));
+		// Read the keyboard response
+		// Again, we don't care, ignore the result
+		data=this.device.getFeatureReport(6, 10);
+		if (data[0]!=6||data[1]!=2)
+			{
+			console.log("Failed authentication response");
+			return false;
+			}
+		let	n = BigInt(challenge & 7n);
+		let v = BigInt(this.rol8n(challenge, n));
+		let k = BigInt(0n);
+		if ((v & 1n) == ((120n >> n) & 1n))
+			k = this.#AUTH_EVEN_TBL[n];
+		else
+			{
+			v = v ^ this.rol8(v);
+			k = this.#AUTH_ODD_TBL[n];
+			}
+		let response= BigInt(v ^ (this.rol8(v) & this.#MASK) ^ k);
+		//Read the status
+		const buf = Buffer.allocUnsafe(8);
+		buf.writeBigUInt64LE(response, 0);
+		this.device.sendFeatureReport(Buffer.concat([Buffer.from([6,3]),buf]));
+		data=this.device.getFeatureReport(6, 10);
+		if (data[0]!=6||data[1]!=4)
+			{
+			console.log("Failed authentication status");
+			return false;
+			}
+		return true;
 	}// end of authenticate
 
 }; //end of class
