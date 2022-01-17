@@ -49,7 +49,7 @@ Jog:-3
 ```
 You can do what you want by keyCode or keyName. Please remember, that's for now, script assume that SpeedEditor device is connected. Otherwise it throw an error.
 
-Setting leds on/off is done by using `se.setLight(value,led[,led])` where name is one of 18 led names defined in SpeedEditor class. Value `true` turn off light, `false` of course set light on. You can also set more leds at once, by adding more arguments.
+Setting leds on/off is done by using `se.setLight(value,led[,led])` where led is one of 18 led names defined in SpeedEditor class. Value `true` turn on light, `false` of course set light off. You can also set more leds at once, by adding more arguments or arrays.
 On every startup all lights is set to `false`. At this moment there is no veryfication on automation for leds. You can set on all 18 leds :)
 
 ### Todo
