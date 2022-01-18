@@ -1,3 +1,8 @@
+// SpeedEditor.js
+//
+// Speed Editor HID for Node JS
+// Copyright (C) 2022 Radomir Rytych
+
 class SpeedEditor {
 	device;
 	keys=[];
