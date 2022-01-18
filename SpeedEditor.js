@@ -65,7 +65,10 @@ class SpeedEditor {
 		cam1:		1<<14,
 		cam2:		1<<15,
 		cam3:		1<<16,
-		audioOnly:	1<<17
+		audioOnly:	1<<17,
+		jog:		262145,
+		shtl:		262146,
+		scrl:		262148
 	}
 	currentLed=[];
 	keyAction(data){
@@ -98,8 +101,8 @@ class SpeedEditor {
 			if (data[0]==4) this.keyAction(data.slice(1));
 			else if (data[0]==3)
 				{
-					let value = buffer.readInt32LE(2);
-					this.emit('jog',Math.round(value/360));
+				let value = buffer.readInt32LE(2);
+				this.emit('jog',Math.round(value/360));
 				}
 			});
 		this.authTimer=setInterval(()=>{
@@ -110,17 +113,31 @@ class SpeedEditor {
 
 	setLight = (value,...code) => {
 		for (let c of code.flat())
-		{
+			{
 			if (value&&this.currentLed.indexOf(c)==-1) this.currentLed.push(c);
 			if (!value&&this.currentLed.indexOf(c)!=-1) this.currentLed.splice(this.currentLed.indexOf(c),1);
-		}
+			}
 		let leds=0;
-		for (let i of this.currentLed) leds|=i;
-		let buf = Buffer.from([2,0,0,0,0,0]);
+		let jogs=0;
+		for (let i of this.currentLed) 
+			{
+			if (i>1<<18) jogs|=i-262144;
+			else leds|=i;
+			}
+		let buf = Buffer.from([4,jogs]);
+		this.device.write(buf);
+		buf = Buffer.from([2,0,0,0,0,0]);
 		buf.writeUInt32LE(leds, 1);
 		this.device.write(buf);
 	}
-
+	getLight = () => {
+		return this.currentLed;
+	}
+	getLightNames = () => {
+		let keys=Object.getOwnPropertyNames(SpeedEditor.leds);
+		let vals=Object.values(SpeedEditor.leds);
+		return this.currentLed.map(element => keys[vals.indexOf(element)]);
+	}
 	/*
 	* Authenticate module is taken from:
 	* https://github.com/smunaut/blackmagic-misc
@@ -188,11 +205,11 @@ class SpeedEditor {
 			v = v ^ this.rol8(v);
 			k = this.#AUTH_ODD_TBL[n];
 			}
-		let response= BigInt(v ^ (this.rol8(v) & this.#MASK) ^ k);
+		let response = BigInt(v ^ (this.rol8(v) & this.#MASK) ^ k);
+		let buf = Buffer.from([6,3,0,0,0,0,0,0,0,0]);
+		buf.writeBigUInt64LE(response, 2);
+		this.device.sendFeatureReport(buf);
 		//Read the status
-		const buf = Buffer.allocUnsafe(8);
-		buf.writeBigUInt64LE(response, 0);
-		this.device.sendFeatureReport(Buffer.concat([Buffer.from([6,3]),buf]));
 		data=this.device.getFeatureReport(6, 10);
 		if (data[0]!=6||data[1]!=4)
 			{
