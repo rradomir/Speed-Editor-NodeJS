@@ -5,6 +5,8 @@ Speed Editor HID implementation in Node JS
 This project was tested only on Raspberry PI Electron build, just for my own needs. But maybe you find it usable for you.
 If you want to use this on RPI also, or I think any other linux distribution, you need to alter priveleges, because this is needed for connection.
 
+**Module `node-hid` is needed to run.**
+
 ### What is done
 With [authentication formula by Sylvain Munaut](https://github.com/smunaut/blackmagic-misc "Github link") this script can:
 * connect Speed Editor
@@ -51,11 +53,20 @@ You can also check which leds is currently on.
 * `se.getLight()` - will return array of leds codes. 
 * `se.getLightNames()` - will return array of names, just more user-friendly list.
 
+It is possible to use this arrays again:
+```js
+let led=se.getLight();
+se.setLight(false,led[0]); //turn off first light from array
+
+let led_name=se.getLightNames();
+se.setLight(false,SpeedEditor.leds[led_name[0]]); //turn off first light from array
+```
+
 List of all names:
 
 ``` closeUp, cut, dis, smthCut, trans, snap, cam1, cam2, cam3, cam4, cam5, cam6, cam7, cam8, cam9, liveOwr, videoOnly, audioOnly, jog, shtl, scrl ```
 
-On every startup all lights is set to `false`. At this moment there is no automation for leds. Keys isn't anyway connected to their leds. You can set on all 21 leds :) this also counts for JOG keys, they are independent and you can turn all 3.
+On every startup all lights are set to `false`. At this moment there is no automation for leds. Keys isn't anyway connected to their leds. You can set on all 21 leds :) this also counts for JOG keys, they are independent and you can turn all 3.
 Please remember, that's for now, script assume that SpeedEditor device is connected. Otherwise it throw an error.
 
 ### Todo
